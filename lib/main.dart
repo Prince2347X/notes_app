@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'content.dart';
+
 void main() {
   runApp(const MaterialApp(
-    home: NotesApp(),
+    home: NotesApp(),//ContentView(),
     debugShowCheckedModeBanner: false,
   ));
 }
@@ -37,14 +39,17 @@ class _NotesAppState extends State<NotesApp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color.fromARGB(230, 247, 247, 247),
       appBar: AppBar(
         title: const Text("Notes"),
       ),
-      body: _noOfNotes == 0 ? NotesView() : const Center(
-        child: Text("You don't have any note. \nStart by creating one."),
+      body: _noOfNotes != 0 ? NotesView() : const Center(
+        child: Text("You don't have any notes\nStart by creating one.", textAlign: TextAlign.center,),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {}, //TODO: IMPLEMENT NOTES CREATING
+        onPressed: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => const ContentView()));
+        }, //TODO: IMPLEMENT NOTES CREATING
         child: const Icon(Icons.add),
       ),
     );
