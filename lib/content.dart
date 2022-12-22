@@ -1,22 +1,27 @@
 import 'package:flutter/material.dart';
 
 class ContentView extends StatefulWidget {
-  const ContentView({Key? key}) : super(key: key);
+  final bool isNew;
+  final String? title, content;
+  const ContentView({Key? key, this.isNew = false, this.title, this.content}) : super(key: key);
 
   @override
   State<ContentView> createState() => _ContentViewState();
 }
 
 class _ContentViewState extends State<ContentView> {
+
   @override
   Widget build(BuildContext context) {
+    TextEditingController _titleController = TextEditingController(text: widget.title);
+    TextEditingController _contentController = TextEditingController(text: widget.content);
     return Scaffold(
       appBar: AppBar(
-        title: const Padding(
-          padding: EdgeInsets.only(top: 8),
+        title: Padding(
+          padding: const EdgeInsets.only(top: 8),
           child: Text(
-            "NEW NOTE",
-            style: TextStyle(
+            widget.isNew ? "NEW NOTE" : "NOTE",
+            style: const TextStyle(
               color: Colors.black,
               fontSize: 14,
             ),
@@ -60,12 +65,13 @@ class _ContentViewState extends State<ContentView> {
       ),
       body: SafeArea(
           child: ListView(
-        children: const [
+        children: [
           Padding(
-            padding: EdgeInsets.symmetric(vertical: 4, horizontal: 12),
+            padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
             child: TextField(
+              controller: widget.isNew ? null : _titleController,
               cursorWidth: 3,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 border: InputBorder.none,
                 hintText: "Title",
               ),
@@ -73,14 +79,15 @@ class _ContentViewState extends State<ContentView> {
               enabled: true,
               maxLines: null,
               keyboardType: TextInputType.multiline,
-              style: TextStyle(
+              style: const TextStyle(
                   fontSize: 30,
                   fontWeight: FontWeight.bold,
                   color: Colors.black),
             ),
           ),
           TextField(
-            decoration: InputDecoration(
+            controller: widget.isNew ? null : _contentController,
+            decoration: const InputDecoration(
                 border: InputBorder.none,
                 hintText: "Start typing...",
                 contentPadding: EdgeInsets.symmetric(horizontal: 12)),
@@ -88,6 +95,7 @@ class _ContentViewState extends State<ContentView> {
             keyboardType: TextInputType.multiline,
             autofocus: true,
             cursorHeight: 18,
+
           )
         ],
       )),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'content.dart';
+import 'modals.dart';
 
 void main() {
   runApp(const MaterialApp(
@@ -43,12 +44,12 @@ class _NotesAppState extends State<NotesApp> {
       appBar: AppBar(
         title: const Text("Notes"),
       ),
-      body: _noOfNotes != 0 ? NotesView() : const Center(
+      body: _noOfNotes == 0 ? NotesView() : const Center(
         child: Text("You don't have any notes\nStart by creating one.", textAlign: TextAlign.center,),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => const ContentView()));
+          Navigator.push(context, MaterialPageRoute(builder: (context) => const ContentView(isNew: true,)));
         }, //TODO: IMPLEMENT NOTES CREATING
         child: const Icon(Icons.add),
       ),
@@ -68,7 +69,11 @@ class NotesView extends StatefulWidget {
 class _NotesViewState extends State<NotesView> {
   @override
   Widget build(BuildContext context) {
-    return const Text("Hmm...");
+    return ListView(
+      children: const [
+        Note()
+      ],
+    );
   }
 }
 
