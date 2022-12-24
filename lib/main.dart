@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:simple_icons/simple_icons.dart';
 
 import 'content.dart';
-import 'modals.dart';
+import 'models.dart';
+
+String separator = "∞Ω"; //infinity and omega
 
 void main() {
   runApp(const MaterialApp(
-    home: NotesApp(),//ContentView(),
+    home: NotesApp(), //ContentView(),
     debugShowCheckedModeBanner: false,
   ));
 }
@@ -19,62 +22,50 @@ class NotesApp extends StatefulWidget {
 }
 
 class _NotesAppState extends State<NotesApp> {
-  int _noOfNotes = 0;
-
-
-  @override
-  void initState() {
-    _loadNoOfNotes();
-    super.initState();
-  }
-
-  Future<void> _loadNoOfNotes() async {
-    final prefs = await SharedPreferences.getInstance();
+  int noOfNotes = 0;
+  List<String> notesTitles = [];
+  List<String> notesContents = [];
+  void callback(List<String> note) {
     setState(() {
-      _noOfNotes = prefs.getInt('no_of_notes') ?? 0;
-      prefs.setInt('np_of_notes', _noOfNotes);
+      noOfNotes += 1;
+      notesTitles.insert(0, note[0]);
+      notesContents.insert(0, note[1]);
     });
   }
 
-  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(230, 247, 247, 247),
       appBar: AppBar(
+        actions: [
+          IconButton(onPressed: () {launchUrl(Uri.parse("https://github.com/Prince2347X/notes_app"));}, icon: const Icon(SimpleIcons.github))
+        ],
         title: const Text("Notes"),
       ),
-      body: _noOfNotes == 0 ? NotesView() : const Center(
-        child: Text("You don't have any notes\nStart by creating one.", textAlign: TextAlign.center,),
-      ),
+      body: noOfNotes != 0
+          ? ListView.builder(itemCount: noOfNotes,
+      itemBuilder: (context, index) {
+            return noteModal(notesTitles[index], notesContents[index], context);
+      },)
+          : const Center(
+              child: Text(
+                "You don't have any notes\nStart by creating one.",
+                textAlign: TextAlign.center,
+              ),
+            ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => const ContentView(isNew: true,)));
-        }, //TODO: IMPLEMENT NOTES CREATING
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => ContentView(
+                        isNew: true,
+                    callback_: callback,
+                      )));
+        },
         child: const Icon(Icons.add),
       ),
     );
   }
 }
-
-
-
-class NotesView extends StatefulWidget {
-  const NotesView({Key? key}) : super(key: key);
-
-  @override
-  State<NotesView> createState() => _NotesViewState();
-}
-
-class _NotesViewState extends State<NotesView> {
-  @override
-  Widget build(BuildContext context) {
-    return ListView(
-      children: const [
-        Note()
-      ],
-    );
-  }
-}
-
-

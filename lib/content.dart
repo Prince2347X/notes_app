@@ -1,26 +1,41 @@
 import 'package:flutter/material.dart';
 
+
 class ContentView extends StatefulWidget {
   final bool isNew;
   final String? title, content;
-  const ContentView({Key? key, this.isNew = false, this.title, this.content}) : super(key: key);
+  final Function? callback_;
+
+  const ContentView({Key? key, this.isNew = false, this.title, this.content, this.callback_})
+      : super(key: key);
 
   @override
   State<ContentView> createState() => _ContentViewState();
 }
 
 class _ContentViewState extends State<ContentView> {
+  bool isNew = false;
+  String? title, content;
+  @override
+  void initState() {
+    isNew = widget.isNew;
+    content = widget.content;
+    title = widget.title;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    TextEditingController _titleController = TextEditingController(text: widget.title);
-    TextEditingController _contentController = TextEditingController(text: widget.content);
+    TextEditingController titleController =
+        TextEditingController(text: isNew ? null : title);
+    TextEditingController contentController =
+        TextEditingController(text: isNew ? null : content);
     return Scaffold(
       appBar: AppBar(
         title: Padding(
           padding: const EdgeInsets.only(top: 8),
           child: Text(
-            widget.isNew ? "NEW NOTE" : "NOTE",
+            isNew ? "NEW NOTE" : "NOTE",
             style: const TextStyle(
               color: Colors.black,
               fontSize: 14,
@@ -43,6 +58,11 @@ class _ContentViewState extends State<ContentView> {
                 size: 22,
               ),
               onPressed: () {
+                if (isNew) {
+                  widget.callback_!(
+                    [titleController.text, contentController.text]
+                  );
+                }
                 Navigator.pop(context);
               },
             ),
@@ -69,7 +89,7 @@ class _ContentViewState extends State<ContentView> {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
             child: TextField(
-              controller: widget.isNew ? null : _titleController,
+              controller: titleController,
               cursorWidth: 3,
               decoration: const InputDecoration(
                 border: InputBorder.none,
@@ -86,16 +106,15 @@ class _ContentViewState extends State<ContentView> {
             ),
           ),
           TextField(
-            controller: widget.isNew ? null : _contentController,
+            controller: contentController,
             decoration: const InputDecoration(
                 border: InputBorder.none,
                 hintText: "Start typing...",
                 contentPadding: EdgeInsets.symmetric(horizontal: 12)),
             maxLines: null,
             keyboardType: TextInputType.multiline,
-            autofocus: true,
+            autofocus: isNew ? true : false,
             cursorHeight: 18,
-
           )
         ],
       )),
