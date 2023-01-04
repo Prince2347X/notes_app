@@ -39,7 +39,7 @@ class _NotesAppState extends State<NotesApp> {
       backgroundColor: const Color.fromARGB(230, 247, 247, 247),
       appBar: AppBar(
         actions: [
-          IconButton(onPressed: () {launchUrl(Uri.parse("https://github.com/Prince2347X/notes_app"));}, icon: const Icon(SimpleIcons.github))
+          IconButton(onPressed: () {launchUrl(Uri.parse("https://github.com/Prince2347X/notes_app"), mode: LaunchMode.externalApplication);}, icon: const Icon(SimpleIcons.github))
         ],
         title: const Text("Notes"),
       ),

@@ -54,8 +54,9 @@ dev_dependencies:
 
 flutter_native_splash:
   image: assets/3D_note.png
-  color: "#253035"
-  color_dark: "#dad7e6"
+  color: "#cce8fd"
+  color_dark: "#1D2028"
+  fullscreen: true
 
 flutter_icons:
   android: true
